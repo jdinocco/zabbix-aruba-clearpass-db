@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-11-04T21:30:15Z</date>
+    <groups>
+        <group>
+            <name>Discovered hosts</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Monitoreo Aruba ClearPass DB</template>
+            <name>Monitoreo Aruba ClearPass DB</name>
+            <groups>
+                <group>
+                    <name>Discovered hosts</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>ClearPass DB</name>
+                </application>
+                <application>
+                    <name>Radius</name>
+                </application>
+                <application>
+                    <name>Tacacs+</name>
+                </application>
+                <application>
+                    <name>Total Authentication</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Get Data from DB</name>
+                    <type>EXTERNAL</type>
+                    <key>clearpassDB.sh[{$PGPASS},{HOST.CONN},{HOST.NAME},{$INTERVAL}]</key>
+                    <delay>3m</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{str(failed: 1,{$NODATA_ALERT})}=1</expression>
+                            <name>Data Sender Fail on {HOST.NAME}</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                        <trigger>
+                            <expression>{nodata({$NODATA_ALERT})}=1</expression>
+                            <name>No Data from Script on {HOST.NAME}</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Radius Fail request count</name>
+                    <type>TRAP</type>
+                    <key>radFail</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Radius</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Radius Fail percent</name>
+                    <type>TRAP</type>
+                    <key>radFailPercent</key>
+                    <delay>0</delay>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Radius</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Radius Success request count</name>
+                    <type>TRAP</type>
+                    <key>radSuc</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Radius</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Radius Success percent</name>
+                    <type>TRAP</type>
+                    <key>radSucPercent</key>
+                    <delay>0</delay>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Radius</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Radius Total request count</name>
+                    <type>TRAP</type>
+                    <key>radTotal</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Radius</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tacacs+ Fail request count</name>
+                    <type>TRAP</type>
+                    <key>tacFail</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Tacacs+</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tacacs+ Fail percent</name>
+                    <type>TRAP</type>
+                    <key>tacFailPercent</key>
+                    <delay>0</delay>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Tacacs+</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tacacs+ Success request count</name>
+                    <type>TRAP</type>
+                    <key>tacSuc</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Tacacs+</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tacacs+ Success percent</name>
+                    <type>TRAP</type>
+                    <key>tacSucPercent</key>
+                    <delay>0</delay>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Tacacs+</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Tacacs+ Total request count</name>
+                    <type>TRAP</type>
+                    <key>tacTotal</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Tacacs+</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Total Authentication request count</name>
+                    <type>TRAP</type>
+                    <key>totalAuth</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Total Authentication</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Total Fail request count</name>
+                    <type>TRAP</type>
+                    <key>totalFail</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Total Authentication</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Total Fail percent</name>
+                    <type>TRAP</type>
+                    <key>totalFailPercent</key>
+                    <delay>0</delay>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Total Authentication</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Total Success request count</name>
+                    <type>TRAP</type>
+                    <key>totalSuc</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Total Authentication</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Total Success percent</name>
+                    <type>TRAP</type>
+                    <key>totalSucPercent</key>
+                    <delay>0</delay>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ClearPass DB</name>
+                        </application>
+                        <application>
+                            <name>Total Authentication</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$INTERVAL}</macro>
+                    <value>3</value>
+                    <description>Intervalo de muestreo en minutos</description>
+                </macro>
+                <macro>
+                    <macro>{$NODATA_ALERT}</macro>
+                    <value>15m</value>
+                </macro>
+                <macro>
+                    <macro>{$PGPASS}</macro>
+                    <type>SECRET_TEXT</type>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
