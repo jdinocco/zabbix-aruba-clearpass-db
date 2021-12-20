@@ -9,21 +9,41 @@ export PGPASSWORD="$PGPASS"
 NOW=$(date '+%Y-%m-%d %H:%M:%S')
 PAST=$(date '+%Y-%m-%d %H:%M:%S' --date="$INTERVAL minutes ago")
 
-radFail=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(id) from tips_radius_session_log where error_code != '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
-radSuc=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(id) from tips_radius_session_log where error_code = '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
-tacFail=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(user_session_id) from tips_tacacs_session_log where request_type = 'TACACS_AUTHENTICATION' and error_code != '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
-tacSuc=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(user_session_id) from tips_tacacs_session_log where request_type = 'TACACS_AUTHENTICATION' and error_code = '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
+radFail=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(id) from tips_radius_session_log where user_name != 'toby' and error_code != '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
+radSuc=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(id) from tips_radius_session_log where user_name != 'toby' and error_code = '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
+tacFail=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(user_session_id) from tips_tacacs_session_log where user_name != 'toby' and request_type = 'TACACS_AUTHENTICATION' and error_code != '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
+tacSuc=$(psql -qtA -h $PGTARGET -d tipsLogDb -U appexternal -c "select count(user_session_id) from tips_tacacs_session_log where user_name != 'toby' and request_type = 'TACACS_AUTHENTICATION' and error_code = '0' and "timestamp" >= '$PAST' and "timestamp" <= '$NOW';")
 radTotal=$(($radFail+$radSuc))
 tacTotal=$(($tacFail+$tacSuc))
 totalSuc=$(($radSuc+$tacSuc))
 totalFail=$(($radFail+$tacFail))
 totalAuth=$(($totalSuc+$totalFail))
+
+# Fix for calculation error
+if [[ $radTotal = 0 ]]
+then
+    radFailPercent=0
+    radSucPercent=0
+else
 radFailPercent=$(awk "BEGIN { pc=100*${radFail}/${radTotal}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
 radSucPercent=$(awk "BEGIN { pc=100*${radSuc}/${radTotal}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
+fi
+if [[ $tacTotal = 0 ]]
+then
+tacFailPercent=0
+tacSucPercent=0
+else
 tacFailPercent=$(awk "BEGIN { pc=100*${tacFail}/${tacTotal}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
 tacSucPercent=$(awk "BEGIN { pc=100*${tacSuc}/${tacTotal}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
+fi
+if [[ $totalAuth = 0 ]]
+then
+totalFailPercent=0
+totalSucPercent=0
+else
 totalFailPercent=$(awk "BEGIN { pc=100*${totalFail}/${totalAuth}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
 totalSucPercent=$(awk "BEGIN { pc=100*${totalSuc}/${totalAuth}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
+fi
 
 zabbix_sender -z 127.0.0.1 -s $PGHOST -k radFail -o $(echo $radFail)
 zabbix_sender -z 127.0.0.1 -s $PGHOST -k radSuc -o $(echo $radSuc)
